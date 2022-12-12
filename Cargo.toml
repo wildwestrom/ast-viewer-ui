@@ -13,4 +13,6 @@ categories = ["visualization", "text-editors"]
 
 [dependencies]
 clap = { version = "4.0.29", features = ["derive"] }
+proc-macro2 = "1.0.47"
+quote = "1.0.21"
 syn = { version = "1.0.105", features = ["parsing", "full", "extra-traits"] }
