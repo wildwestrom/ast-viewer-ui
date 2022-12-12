@@ -6,28 +6,22 @@ use quote::ToTokens;
 // proc-macro2 crate might come in handy
 
 fn round_trip(input_code: &str) -> Result<String> {
-	let ast = syn::parse_file(&input_code)?;
+	let ast = syn::parse_file(input_code)?;
 
 	let string_from_ast_shebang: String = if let Some(shebang) = ast.shebang {
 		shebang
 	} else {
-		"".to_string()
+		String::new()
 	};
 	let string_from_ast_attrs: String = ast
 		.attrs
 		.iter()
-		.map(|attr| {
-			let token_stream = attr.to_token_stream().to_string();
-			token_stream
-		})
+		.map(|attr| attr.to_token_stream().to_string())
 		.collect();
 	let string_from_ast_items: String = ast
 		.items
 		.iter()
-		.map(|item| {
-			let token_stream = item.to_token_stream().to_string();
-			token_stream
-		})
+		.map(|item| item.to_token_stream().to_string())
 		.collect();
 
 	let mut roundtripped_code = String::new();
