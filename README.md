@@ -15,5 +15,5 @@ Subject to change of course, but here's the basic gist.
 3. [ ] Allow for editing AST nodes.
 4. [ ] Output a new source file after editing the AST.
 5. [ ] Allow for editing files in a whole Rust project.
-7. [ ] Turn this into its own "language" as a thin wrapper over assembly or
+7. [ ] Turn this into its own "language" as a thin wrapper over machine code, assembly, or
 	 something like LLVM-IR, that allows for higher-level abstractions.
