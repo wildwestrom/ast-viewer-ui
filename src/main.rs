@@ -7,6 +7,7 @@ use quote::ToTokens;
 
 fn round_trip(input_code: &str) -> Result<String> {
 	let ast = syn::parse_file(&input_code)?;
+
 	let string_from_ast_shebang: String = if let Some(shebang) = ast.shebang {
 		shebang
 	} else {
@@ -40,7 +41,6 @@ fn main() -> Result<()> {
 	let args = Cli::parse();
 	let contents = std::fs::read_to_string(args.input)?;
 	let roundtripped_code = round_trip(&contents)?;
-	assert_eq!(round_trip(&roundtripped_code)?, roundtripped_code);
 	std::fs::write(args.output, roundtripped_code)?;
 	Ok(())
 }
@@ -61,7 +61,8 @@ mod tests {
 	fn test_round_trip(testfile: &str) {
 		let mut filepath = "test-inputs/".to_string();
 		filepath.push_str(testfile);
-		let contents = std::fs::read_to_string(filepath.clone()).expect(&format!("failed to read file from {filepath}"));
+		let contents = std::fs::read_to_string(filepath.clone())
+			.expect(&format!("failed to read file from {filepath}"));
 		let roundtripped_code = round_trip(&contents).expect("failed to read rust source string");
 		assert_eq!(round_trip(&roundtripped_code).unwrap(), roundtripped_code);
 	}
