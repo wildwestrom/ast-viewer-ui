@@ -1,14 +1,14 @@
 use std::{ffi::OsString, fs};
 
 use anyhow::Result;
-use ast_viewer_ui::round_trip;
 use clap::Parser;
-// proc-macro2 crate might come in handy
 
 fn main() -> Result<()> {
 	let args = Cli::parse();
 	let contents = fs::read_to_string(args.input)?;
-	let roundtripped_code = round_trip(&contents)?;
+	let ast = syn::parse_file(&contents)?;
+	dbg!(&ast);
+	let roundtripped_code = ast_viewer_ui::ast_to_string(ast);
 	fs::write(args.output, roundtripped_code)?;
 	Ok(())
 }

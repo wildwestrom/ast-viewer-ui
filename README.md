@@ -10,7 +10,7 @@ Rust code and spit the AST back out.
 
 Subject to change of course, but here's the basic gist.
 
-1. [ ] Round-trip any Rust file.
+1. [X] Round-trip any Rust file.
 1. [ ] Have a minimal GUI.
 1. [ ] Allow for editing AST nodes.
 1. [ ] Output a new source file after editing the AST.

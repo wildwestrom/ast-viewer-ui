@@ -1,4 +1,5 @@
 use quote::ToTokens;
+// proc-macro2 crate might come in handy
 
 #[must_use]
 pub fn ast_to_string(ast: syn::File) -> String {
