@@ -13,7 +13,9 @@ categories = ["visualization", "text-editors"]
 
 [dependencies]
 anyhow = "1.0.66"
-clap = { version = "4.0.29", features = ["derive"] }
 proc-macro2 = "1.0.47"
 quote = "1.0.21"
+rmp-serde = "1.1.1"
+serde = "1.0.151"
 syn = { version = "1.0.105", features = ["parsing", "full", "extra-traits"] }
+syn-serde = "0.2.3"
