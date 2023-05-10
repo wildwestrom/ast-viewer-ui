@@ -22,10 +22,7 @@ struct MainView {
 
 fn ast_from_path(file: &PathBuf) -> Result<Ast> {
 	ensure!(file.is_file(), "{} is not a file.", file.to_string_lossy());
-	let contents = std::fs::read_to_string(&file).expect(&format!(
-		"failed to read file from {}",
-		file.to_string_lossy()
-	));
+	let contents = std::fs::read_to_string(file)?;
 	let ast = syn::parse_file(&contents)?;
 	Ok(ast)
 }
@@ -36,11 +33,11 @@ impl Application for MainView {
 	type Message = Message;
 	type Theme = Theme;
 
-	fn new(_flags: ()) -> (MainView, Command<Message>) {
+	fn new(_flags: ()) -> (Self, Command<Message>) {
 		let test_default_path = PathBuf::from_str("./test-inputs/quicksort.rs").unwrap();
 		let test_default_ast = ast_from_path(&test_default_path).ok();
 		(
-			MainView {
+			Self {
 				current_file: Some(test_default_path),
 				ast: test_default_ast,
 			},
@@ -57,7 +54,7 @@ impl Application for MainView {
 			Self::Message::LoadFile => {
 				self.current_file = FileDialog::new().set_directory(".").pick_file();
 				if let Some(file) = &self.current_file {
-					self.ast = ast_from_path(file).ok()
+					self.ast = ast_from_path(file).ok();
 				}
 			},
 		}
