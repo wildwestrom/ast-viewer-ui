@@ -1,30 +1,22 @@
 use quote::ToTokens;
-// proc-macro2 crate might come in handy
 
 #[must_use]
 pub fn ast_to_string(ast: syn::File) -> String {
-	let string_from_ast_shebang: String = if let Some(shebang) = ast.shebang {
-		shebang
-	} else {
-		String::new()
-	};
-	let string_from_ast_attrs: String = ast
+	let shebang = ast.shebang.unwrap_or_default();
+	let attrs = ast
 		.attrs
 		.iter()
-		.map(|attr| attr.to_token_stream().to_string())
-		.collect();
-	let string_from_ast_items: String = ast
+		.map(|attr| attr.to_token_stream().to_string());
+	let items = ast
 		.items
 		.iter()
-		.map(|item| item.to_token_stream().to_string())
-		.collect();
+		.map(|item| item.to_token_stream().to_string());
 
-	let mut new_code_string = String::new();
-	new_code_string.push_str(&string_from_ast_shebang);
-	new_code_string.push_str(&string_from_ast_attrs);
-	new_code_string.push_str(&string_from_ast_items);
+	let mut ast_string = shebang;
+	ast_string.extend(attrs);
+	ast_string.extend(items);
 
-	new_code_string
+	ast_string
 }
 
 /// # Errors
