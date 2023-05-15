@@ -31,37 +31,23 @@ pub fn round_trip(input_code: &str) -> syn::Result<String> {
 mod tests {
 	use super::*;
 
-	fn test_round_trip(testfile: &str) {
-		let mut filepath = "test-inputs/".to_string();
-		filepath.push_str(testfile);
-		let contents = std::fs::read_to_string(filepath.clone())
-			.expect(&format!("failed to read file from {filepath}"));
-		let roundtripped_code = round_trip(&contents).expect("failed to read rust source string");
-		assert_eq!(round_trip(&roundtripped_code).unwrap(), roundtripped_code);
-	}
+	const TEST_CASES: &[&str] = &[
+		"hello.rs",
+		"quicksort.rs",
+		"intrinsics.rs",
+		"find-crate-roots.rs",
+		"macros.rs",
+	];
 
 	#[test]
-	fn hello() {
-		test_round_trip("hello.rs")
-	}
-
-	#[test]
-	fn quicksort() {
-		test_round_trip("quicksort.rs")
-	}
-
-	#[test]
-	fn top_level_attrs() {
-		test_round_trip("intrinsics.rs")
-	}
-
-	#[test]
-	fn shebang() {
-		test_round_trip("find-crate-roots.rs")
-	}
-
-	#[test]
-	fn macros() {
-		test_round_trip("macros.rs")
+	fn test_round_trip() {
+		for case in TEST_CASES {
+			let filepath = format!("test-inputs/{}", case);
+			let contents = std::fs::read_to_string(filepath.clone())
+				.unwrap_or_else(|_| panic!("failed to read file from {}", filepath));
+			let roundtripped_code =
+				round_trip(&contents).expect("failed to read rust source string");
+			assert_eq!(round_trip(&roundtripped_code).unwrap(), roundtripped_code);
+		}
 	}
 }
