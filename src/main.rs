@@ -1,9 +1,11 @@
 use std::{path::PathBuf, str::FromStr};
 
 use anyhow::{ensure, Ok, Result};
+mod ast_view;
+use ast_view::ast_view;
 use iced::{
 	executor,
-	widget::{button, column, scrollable, text},
+	widget::{button, column, text},
 	Application, Command, Element, Length, Settings, Theme,
 };
 use rfd::FileDialog;
@@ -12,7 +14,7 @@ type Ast = syn::File;
 
 #[derive(Debug, Clone, Copy)]
 enum Message {
-	LoadFile,
+	FileLoaded,
 }
 
 struct MainView {
@@ -51,7 +53,7 @@ impl Application for MainView {
 
 	fn update(&mut self, message: Message) -> Command<Message> {
 		match message {
-			Self::Message::LoadFile => {
+			Self::Message::FileLoaded => {
 				self.current_file = FileDialog::new().set_directory(".").pick_file();
 				if let Some(file) = &self.current_file {
 					self.ast = ast_from_path(file).ok();
@@ -63,18 +65,13 @@ impl Application for MainView {
 
 	fn view(&self) -> Element<Message> {
 		let title = text("AST Viewer UI").into();
-		let loadbtn = button("Load File").on_press(Message::LoadFile).into();
+		let loadbtn = button("Load File").on_press(Message::FileLoaded).into();
 		let curr_file_disp = text(match &self.current_file {
 			Some(f) => f.to_string_lossy(),
 			None => "No file loaded".into(),
 		})
 		.into();
-		let ast_view = scrollable(text(match &self.ast {
-			Some(ast) => format!("{:#?}", ast),
-			None => "No ast yet".into(),
-		}))
-		.width(Length::Fill)
-		.into();
+		let ast_view = ast_view(self.ast.clone(), || Message::FileLoaded).into();
 
 		column(vec![title, loadbtn, curr_file_disp, ast_view])
 			.width(Length::Fill)
