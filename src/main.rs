@@ -2,7 +2,7 @@ use std::{path::PathBuf, str::FromStr};
 
 use anyhow::{ensure, Ok, Result};
 mod ast_view;
-use ast_view::ast_view;
+use ast_view::{ast_view, AstView};
 use iced::{
 	executor,
 	widget::{button, column, text},
@@ -15,11 +15,12 @@ type Ast = syn::File;
 #[derive(Debug, Clone, Copy)]
 enum Message {
 	FileLoaded,
+	AstViewMessage(ast_view::Message),
 }
 
 struct MainView {
 	current_file: Option<PathBuf>,
-	ast: Option<Ast>,
+	ast_view: AstView,
 }
 
 fn ast_from_path(file: &PathBuf) -> Result<Ast> {
@@ -41,7 +42,7 @@ impl Application for MainView {
 		(
 			Self {
 				current_file: Some(test_default_path),
-				ast: test_default_ast,
+				ast_view: ast_view(test_default_ast),
 			},
 			Command::none(),
 		)
@@ -53,10 +54,11 @@ impl Application for MainView {
 
 	fn update(&mut self, message: Message) -> Command<Message> {
 		match message {
-			Self::Message::FileLoaded => {
+			Message::AstViewMessage(_) => {},
+			Message::FileLoaded => {
 				self.current_file = FileDialog::new().set_directory(".").pick_file();
 				if let Some(file) = &self.current_file {
-					self.ast = ast_from_path(file).ok();
+					self.ast_view = ast_view(ast_from_path(file).ok());
 				}
 			},
 		}
@@ -71,7 +73,7 @@ impl Application for MainView {
 			None => "No file loaded".into(),
 		})
 		.into();
-		let ast_view = ast_view(self.ast.clone(), || Message::FileLoaded).into();
+		let ast_view = self.ast_view.view().map(Message::AstViewMessage);
 
 		column(vec![title, loadbtn, curr_file_disp, ast_view])
 			.width(Length::Fill)
