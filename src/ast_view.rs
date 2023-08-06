@@ -14,7 +14,7 @@ pub fn ast_view<Message>(
 	ast: Option<Ast>,
 	on_change: impl Fn() -> Message + 'static,
 ) -> AstView<Message> {
-	AstView::new(&ast, on_change)
+	AstView::new(ast, on_change)
 }
 
 #[derive(Debug, Clone)]
@@ -23,7 +23,7 @@ pub enum Event {
 }
 
 impl<Message> AstView<Message> {
-	pub fn new(ast: &Option<Ast>, on_change: impl Fn() -> Message + 'static) -> Self {
+	pub fn new(ast: Option<Ast>, on_change: impl Fn() -> Message + 'static) -> Self {
 		Self {
 			text_representation: match ast {
 				Some(ast) => format!("{:#?}", ast),
@@ -39,14 +39,13 @@ impl<Message> Component<Message, Renderer> for AstView<Message> {
 	type State = ();
 
 	fn update(&mut self, _state: &mut Self::State, event: Event) -> Option<Message> {
-		match event {
-			_ => None,
-		}
+		None
 	}
 
 	fn view(&self, _state: &Self::State) -> Element<Event, Renderer> {
 		scrollable(text(self.text_representation.clone()))
 			.width(Length::Fill)
+			.height(Length::Fill)
 			.into()
 	}
 }
