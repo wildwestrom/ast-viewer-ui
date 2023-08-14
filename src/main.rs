@@ -1,11 +1,9 @@
 use std::{path::PathBuf, str::FromStr};
 
 use anyhow::{ensure, Ok, Result};
-mod ast_view;
-use ast_view::{ast_view, AstView};
 use iced::{
 	executor,
-	widget::{button, column, text},
+	widget::{scrollable,button, column, text},
 	Application, Command, Element, Length, Settings, Theme,
 };
 use rfd::FileDialog;
@@ -15,12 +13,12 @@ type Ast = syn::File;
 #[derive(Debug, Clone, Copy)]
 enum Message {
 	FileLoaded,
-	AstViewMessage(ast_view::Message),
 }
 
 struct MainView {
 	current_file: Option<PathBuf>,
-	ast_view: AstView,
+	ast: Option<Ast>,
+	ast_text_representation: String,
 }
 
 fn ast_from_path(file: &PathBuf) -> Result<Ast> {
@@ -28,6 +26,13 @@ fn ast_from_path(file: &PathBuf) -> Result<Ast> {
 	let contents = std::fs::read_to_string(file)?;
 	let ast = syn::parse_file(&contents)?;
 	Ok(ast)
+}
+
+fn map_ast_to_text(maybe_ast: Option<Ast>) -> String {
+	match maybe_ast {
+		Some(ast) => format!("{:#?}", ast),
+		None => "No Ast Yet".into(),
+	}
 }
 
 impl Application for MainView {
@@ -42,7 +47,8 @@ impl Application for MainView {
 		(
 			Self {
 				current_file: Some(test_default_path),
-				ast_view: ast_view(test_default_ast),
+				ast: test_default_ast.clone(),
+				ast_text_representation: map_ast_to_text(test_default_ast),
 			},
 			Command::none(),
 		)
@@ -54,11 +60,12 @@ impl Application for MainView {
 
 	fn update(&mut self, message: Message) -> Command<Message> {
 		match message {
-			Message::AstViewMessage(_) => {},
 			Message::FileLoaded => {
 				self.current_file = FileDialog::new().set_directory(".").pick_file();
 				if let Some(file) = &self.current_file {
-					self.ast_view = ast_view(ast_from_path(file).ok());
+					let ast = ast_from_path(file).ok();
+					self.ast = ast.clone();
+					self.ast_text_representation = map_ast_to_text(ast);
 				}
 			},
 		}
@@ -73,7 +80,12 @@ impl Application for MainView {
 			None => "No file loaded".into(),
 		})
 		.into();
-		let ast_view = self.ast_view.view().map(Message::AstViewMessage);
+
+		let ast_view = scrollable(text(self.ast_text_representation.clone()))
+			.width(Length::Fill)
+			.height(Length::Fill)
+			.into();
+	
 
 		column(vec![title, loadbtn, curr_file_disp, ast_view])
 			.width(Length::Fill)
