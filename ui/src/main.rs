@@ -117,6 +117,9 @@ impl Application for MainView {
 								format!("{} mod {}", moddecl.vis.to_token_stream(), moddecl.ident)
 							},
 							Item::Type(typeitem) => typeitem.to_token_stream().to_string(),
+							Item::Enum(typeenum) => typeenum.to_token_stream().to_string(),
+							Item::Struct(typestruct) => typestruct.to_token_stream().to_string(),
+							Item::Impl(typeimpl) => typeimpl.to_token_stream().to_string(),
 							_ => {
 								eprintln!("{:?}", item);
 								format!("{:#?}", item)
