@@ -140,6 +140,7 @@ impl Application for MainView {
 				horizontal: iced::widget::scrollable::Properties::new(),
 			})
 			.width(iced::Length::Fill)
+			.height(iced::Length::Fill)
 			.into()
 		}])
 		.spacing(6)
