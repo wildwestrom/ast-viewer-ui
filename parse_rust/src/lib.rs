@@ -1,4 +1,5 @@
 use quote::ToTokens;
+pub use syn;
 
 #[must_use]
 pub fn ast_to_string(ast: syn::File) -> String {
@@ -42,7 +43,7 @@ mod tests {
 	#[test]
 	fn test_round_trip() {
 		for case in TEST_CASES {
-			let filepath = format!("test-inputs/{}", case);
+			let filepath = format!("../test-inputs/{}", case);
 			let contents = std::fs::read_to_string(filepath.clone())
 				.unwrap_or_else(|_| panic!("failed to read file from {}", filepath));
 			let roundtripped_code =

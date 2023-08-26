@@ -1,5 +1,6 @@
+use parse_rust::syn;
+use parse_rust::syn::__private::ToTokens;
 use std::{path::PathBuf, str::FromStr};
-use syn::__private::ToTokens;
 
 use anyhow::{ensure, Ok, Result};
 use iced::{
@@ -35,7 +36,7 @@ impl Application for MainView {
 	type Theme = Theme;
 
 	fn new(_flags: ()) -> (Self, Command<Message>) {
-		let test_default_path = PathBuf::from_str("./src/main.rs").unwrap();
+		let test_default_path = PathBuf::from_str("ui/src/main.rs").unwrap();
 		let test_default_ast = ast_from_path(&test_default_path).ok();
 		(
 			Self {

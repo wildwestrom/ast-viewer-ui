@@ -1,0 +1,17 @@
+[package]
+name = "parse_rust"
+version = "0.1.0"
+edition = "2021"
+description = "An AST viewer UI for languages with an AST."
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "TODO"
+keywords = ["AST"]
+categories = ["visualization", "text-editors"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1"
+quote = "1"
+syn = { version = "2", features = ["full", "parsing", "extra-traits"] }
