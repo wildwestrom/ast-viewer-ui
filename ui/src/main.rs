@@ -12,6 +12,14 @@ use rfd::FileDialog;
 
 type Ast = syn::File;
 
+const BOLD_FONT: iced::Font = {
+	let mut font = iced::Font::DEFAULT;
+	font.weight = iced::font::Weight::Bold;
+	font
+};
+
+const MONOSPACE_FONT: iced::Font = iced::Font::MONOSPACE;
+
 #[derive(Debug, Clone, Copy)]
 enum Message {
 	FileLoaded,
@@ -65,13 +73,6 @@ impl Application for MainView {
 	}
 
 	fn view(&self) -> Element<Message> {
-		let bold_font: iced::Font = iced::Font {
-			weight: iced::font::Weight::Bold,
-			family: iced::font::Family::default(),
-			stretch: iced::font::Stretch::default(),
-			monospaced: false,
-		};
-
 		let title = text("AST Viewer UI").into();
 		let loadbtn = button("Load File").on_press(Message::FileLoaded).into();
 		let curr_file_disp = text(match &self.current_file {
@@ -87,14 +88,14 @@ impl Application for MainView {
 					col.push(text(shebang.clone()).into());
 				}
 
-				let mut attrs = vec![text("Attributes: ").font(bold_font).into()];
+				let mut attrs = vec![text("Attributes: ").font(BOLD_FONT).into()];
 				ast.attrs.clone().iter().for_each(|attr| {
 					attrs.push(text(attr.to_token_stream()).into());
 				});
 
 				col.push(column(attrs).into());
 
-				let mut items = vec![text("Items: ").font(bold_font).into()];
+				let mut items = vec![text("Items: ").font(BOLD_FONT).into()];
 				ast.items.iter().for_each(|item| {
 					use syn::Item;
 					items.push(
@@ -125,6 +126,7 @@ impl Application for MainView {
 								format!("{:#?}", item)
 							},
 						})
+						.font(MONOSPACE_FONT)
 						.into(),
 					);
 				});
