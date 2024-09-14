@@ -5,3 +5,9 @@ members = [
   "parse_rust",
   "ui",
 ]
+
+[profile.dev]
+opt-level = 3
+
+[profile.dev.package."*"]
+opt-level = 3

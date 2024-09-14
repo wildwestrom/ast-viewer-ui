@@ -13,6 +13,8 @@ categories = ["visualization", "text-editors"]
 
 [dependencies]
 anyhow = "1"
-iced = { version = "0.10", features = ["lazy"] }
+iced = { version = "0", features = ["lazy"] }
 rfd = "0.11.3"
 parse_rust = { path = "../parse_rust" }
+iced_node_editor = { git = "https://github.com/meew0/iced-node-editor", branch="sockets-iced-v0.12" }
+iced_runtime = "0"
